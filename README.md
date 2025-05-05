@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/gongrzhe-office-powerpoint-mcp-server-badge.png)](https://mseep.ai/app/gongrzhe-office-powerpoint-mcp-server)
+
 # Office-PowerPoint-MCP-Server
 [![smithery badge](https://smithery.ai/badge/@GongRzhe/Office-PowerPoint-MCP-Server)](https://smithery.ai/server/@GongRzhe/Office-PowerPoint-MCP-Server)
 ![](https://badge.mcpx.dev?type=server 'MCP Server')
