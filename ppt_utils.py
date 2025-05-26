@@ -29,18 +29,18 @@ Usage examples:
     # Save the presentation
     save_presentation(pres, "my_presentation.pptx")
 """
-from pptx import Presentation
-from pptx.chart.data import CategoryChartData, ChartData
-from pptx.enum.chart import XL_CHART_TYPE
-from pptx.enum.shapes import MSO_SHAPE, MSO_SHAPE_TYPE
-from pptx.enum.text import PP_ALIGN, MSO_VERTICAL_ANCHOR
-from pptx.util import Inches, Pt
-from pptx.dml.color import RGBColor
-from pptx.oxml.xmlchemy import OxmlElement
-from pptx.shapes.graphfrm import GraphicFrame
-import io
-from typing import Dict, List, Tuple, Union, Optional, Any
 import base64
+import io
+from typing import Any
+
+from pptx import Presentation
+from pptx.chart.data import CategoryChartData
+from pptx.dml.color import RGBColor
+from pptx.enum.chart import XL_CHART_TYPE
+from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.text import MSO_VERTICAL_ANCHOR, PP_ALIGN
+from pptx.util import Inches, Pt
+
 
 def try_multiple_approaches(operation_name, approaches):
     """
@@ -54,14 +54,14 @@ def try_multiple_approaches(operation_name, approaches):
         Tuple of (result, None) if any approach succeeded, or (None, error_messages) if all failed
     """
     error_messages = []
-    
+
     for approach_func, description in approaches:
         try:
             result = approach_func()
             return result, None
         except Exception as e:
             error_messages.append(f"{description}: {str(e)}")
-    
+
     return None, f"Failed to {operation_name} after trying multiple approaches: {'; '.join(error_messages)}"
 
 def safe_operation(operation_name, operation_func, error_message=None, *args, **kwargs):
@@ -157,7 +157,7 @@ def base64_to_presentation(base64_string: str) -> Presentation:
 
 # ---- Slide Functions ----
 
-def add_slide(presentation: Presentation, layout_index: int = 1) -> Tuple:
+def add_slide(presentation: Presentation, layout_index: int = 1) -> tuple:
     """
     Add a slide to the presentation.
     
@@ -172,7 +172,7 @@ def add_slide(presentation: Presentation, layout_index: int = 1) -> Tuple:
     slide = presentation.slides.add_slide(layout)
     return slide, layout
 
-def get_slide_layouts(presentation: Presentation) -> List[Dict]:
+def get_slide_layouts(presentation: Presentation) -> list[dict]:
     """
     Get all available slide layouts in the presentation.
     
@@ -194,7 +194,7 @@ def get_slide_layouts(presentation: Presentation) -> List[Dict]:
 
 # ---- Placeholder Functions ----
 
-def get_placeholders(slide) -> List[Dict]:
+def get_placeholders(slide) -> list[dict]:
     """
     Get all placeholders in a slide.
     
@@ -238,7 +238,7 @@ def populate_placeholder(slide, placeholder_idx: int, text: str) -> None:
     placeholder = slide.placeholders[placeholder_idx]
     placeholder.text = text
 
-def add_bullet_points(placeholder, bullet_points: List[str]) -> None:
+def add_bullet_points(placeholder, bullet_points: list[str]) -> None:
     """
     Add bullet points to a placeholder.
     
@@ -248,12 +248,12 @@ def add_bullet_points(placeholder, bullet_points: List[str]) -> None:
     """
     text_frame = placeholder.text_frame
     text_frame.clear()
-    
+
     for i, point in enumerate(bullet_points):
         p = text_frame.add_paragraph()
         p.text = point
         p.level = 0
-        
+
         # Only add line breaks between bullet points, not after the last one
         if i < len(bullet_points) - 1:
             p.line_spacing = 1.0
@@ -281,8 +281,8 @@ def add_textbox(slide, left: float, top: float, width: float, height: float, tex
     textbox.text_frame.text = text
     return textbox
 
-def format_text(text_frame, font_size: int = None, font_name: str = None, 
-                bold: bool = None, italic: bool = None, color: Tuple[int, int, int] = None,
+def format_text(text_frame, font_size: int = None, font_name: str = None,
+                bold: bool = None, italic: bool = None, color: tuple[int, int, int] = None,
                 alignment: str = None) -> None:
     """
     Format text in a text frame.
@@ -302,26 +302,26 @@ def format_text(text_frame, font_size: int = None, font_name: str = None,
         'right': PP_ALIGN.RIGHT,
         'justify': PP_ALIGN.JUSTIFY
     }
-    
+
     for paragraph in text_frame.paragraphs:
         if alignment and alignment in alignment_map:
             paragraph.alignment = alignment_map[alignment]
-            
+
         for run in paragraph.runs:
             font = run.font
-            
+
             if font_size is not None:
                 font.size = Pt(font_size)
-                
+
             if font_name is not None:
                 font.name = font_name
-                
+
             if bold is not None:
                 font.bold = bold
-                
+
             if italic is not None:
                 font.italic = italic
-                
+
             if color is not None:
                 r, g, b = color
                 font.color.rgb = RGBColor(r, g, b)
@@ -353,7 +353,7 @@ def add_image(slide, image_path: str, left: float, top: float, width: float = No
         )
     return picture
 
-def add_image_from_base64(slide, base64_string: str, left: float, top: float, 
+def add_image_from_base64(slide, base64_string: str, left: float, top: float,
                           width: float = None, height: float = None) -> Any:
     """
     Add an image from a base64 encoded string to a slide.
@@ -371,7 +371,7 @@ def add_image_from_base64(slide, base64_string: str, left: float, top: float,
     """
     image_data = base64.b64decode(base64_string)
     image_stream = io.BytesIO(image_data)
-    
+
     if width and height:
         picture = slide.shapes.add_picture(
             image_stream, Inches(left), Inches(top), Inches(width), Inches(height)
@@ -418,10 +418,10 @@ def set_cell_text(table, row: int, col: int, text: str) -> None:
     cell = table.cell(row, col)
     cell.text = text
 
-def format_table_cell(cell, font_size: int = None, font_name: str = None, 
-                     bold: bool = None, italic: bool = None, 
-                     color: Tuple[int, int, int] = None,
-                     bg_color: Tuple[int, int, int] = None,
+def format_table_cell(cell, font_size: int = None, font_name: str = None,
+                     bold: bool = None, italic: bool = None,
+                     color: tuple[int, int, int] = None,
+                     bg_color: tuple[int, int, int] = None,
                      alignment: str = None,
                      vertical_alignment: str = None) -> None:
     """
@@ -444,42 +444,42 @@ def format_table_cell(cell, font_size: int = None, font_name: str = None,
         'right': PP_ALIGN.RIGHT,
         'justify': PP_ALIGN.JUSTIFY
     }
-    
+
     vertical_alignment_map = {
         'top': MSO_VERTICAL_ANCHOR.TOP,
         'middle': MSO_VERTICAL_ANCHOR.MIDDLE,
         'bottom': MSO_VERTICAL_ANCHOR.BOTTOM
     }
-    
+
     # Format text
     text_frame = cell.text_frame
-    
+
     if vertical_alignment and vertical_alignment in vertical_alignment_map:
         text_frame.vertical_anchor = vertical_alignment_map[vertical_alignment]
-    
+
     for paragraph in text_frame.paragraphs:
         if alignment and alignment in alignment_map:
             paragraph.alignment = alignment_map[alignment]
-            
+
         for run in paragraph.runs:
             font = run.font
-            
+
             if font_size is not None:
                 font.size = Pt(font_size)
-                
+
             if font_name is not None:
                 font.name = font_name
-                
+
             if bold is not None:
                 font.bold = bold
-                
+
             if italic is not None:
                 font.italic = italic
-                
+
             if color is not None:
                 r, g, b = color
                 font.color.rgb = RGBColor(r, g, b)
-    
+
     # Set background color
     if bg_color is not None:
         r, g, b = bg_color
@@ -506,7 +506,7 @@ def add_shape(slide, shape_type: str, left: float, top: float, width: float, hei
     # Ensure shape_type is a string
     shape_type_str = str(shape_type)
     shape_type_lower = shape_type_str.lower()
-    
+
     # Define shape type mapping with correct enum values
     shape_type_map = {
         'rectangle': MSO_SHAPE.RECTANGLE,
@@ -537,15 +537,15 @@ def add_shape(slide, shape_type: str, left: float, top: float, width: float, hei
         'flowchart_internal_storage': MSO_SHAPE.FLOWCHART_INTERNAL_STORAGE,
         'flowchart_connector': MSO_SHAPE.FLOWCHART_CONNECTOR
     }
-    
+
     # Check if shape type is valid before trying to use it
     if shape_type_lower not in shape_type_map:
         available_shapes = ', '.join(sorted(shape_type_map.keys()))
         raise ValueError(f"Unsupported shape type: '{shape_type}'. Available shape types: {available_shapes}")
-    
+
     # Get the shape enum value
     shape_enum = shape_type_map[shape_type_lower]
-    
+
     # Create the shape with better error handling
     try:
         shape = slide.shapes.add_shape(
@@ -556,8 +556,8 @@ def add_shape(slide, shape_type: str, left: float, top: float, width: float, hei
         # More detailed error for debugging
         raise ValueError(f"Could not create shape '{shape_type}' (enum: {shape_enum.__class__.__name__}.{shape_enum.name}): {str(e)}")
 
-def format_shape(shape, fill_color: Tuple[int, int, int] = None, 
-                line_color: Tuple[int, int, int] = None, line_width: float = None) -> None:
+def format_shape(shape, fill_color: tuple[int, int, int] = None,
+                line_color: tuple[int, int, int] = None, line_width: float = None) -> None:
     """
     Format a shape.
     
@@ -571,18 +571,18 @@ def format_shape(shape, fill_color: Tuple[int, int, int] = None,
         r, g, b = fill_color
         shape.fill.solid()
         shape.fill.fore_color.rgb = RGBColor(r, g, b)
-    
+
     if line_color is not None:
         r, g, b = line_color
         shape.line.color.rgb = RGBColor(r, g, b)
-    
+
     if line_width is not None:
         shape.line.width = Pt(line_width)
 
 # ---- Chart Functions ----
 
 def add_chart(slide, chart_type: str, left: float, top: float, width: float, height: float,
-             categories: List[str], series_names: List[str], series_values: List[List[float]]) -> Any:
+             categories: list[str], series_names: list[str], series_values: list[list[float]]) -> Any:
     """
     Add a chart to a slide.
     
@@ -615,21 +615,21 @@ def add_chart(slide, chart_type: str, left: float, top: float, width: float, hei
         'radar': XL_CHART_TYPE.RADAR,
         'radar_markers': XL_CHART_TYPE.RADAR_MARKERS
     }
-    
+
     chart_type_enum = chart_type_map.get(chart_type.lower(), XL_CHART_TYPE.COLUMN_CLUSTERED)
-    
+
     # Create chart data
     chart_data = CategoryChartData()
     chart_data.categories = categories
-    
+
     for i, series_name in enumerate(series_names):
         chart_data.add_series(series_name, series_values[i])
-    
+
     # Add chart to slide
     graphic_frame = slide.shapes.add_chart(
         chart_type_enum, Inches(left), Inches(top), Inches(width), Inches(height), chart_data
     )
-    
+
     return graphic_frame.chart
 
 def format_chart(chart, has_legend: bool = True, legend_position: str = 'right',
@@ -650,7 +650,7 @@ def format_chart(chart, has_legend: bool = True, legend_position: str = 'right',
         chart.chart_title.text_frame.text = title
     else:
         chart.has_title = False
-    
+
     # Configure legend
     chart.has_legend = has_legend
     if has_legend:
@@ -661,7 +661,7 @@ def format_chart(chart, has_legend: bool = True, legend_position: str = 'right',
             'bottom': 4  # XL_LEGEND_POSITION.BOTTOM
         }
         chart.legend.position = position_map.get(legend_position.lower(), 2)
-    
+
     # Configure data labels
     for series in chart.series:
         series.has_data_labels = has_data_labels
@@ -682,23 +682,23 @@ def set_core_properties(presentation: Presentation, title: str = None, subject: 
         comments: Document comments
     """
     core_props = presentation.core_properties
-    
+
     if title is not None:
         core_props.title = title
-        
+
     if subject is not None:
         core_props.subject = subject
-        
+
     if author is not None:
         core_props.author = author
-        
+
     if keywords is not None:
         core_props.keywords = keywords
-        
+
     if comments is not None:
         core_props.comments = comments
 
-def get_core_properties(presentation: Presentation) -> Dict:
+def get_core_properties(presentation: Presentation) -> dict:
     """
     Get core document properties.
     
@@ -709,7 +709,7 @@ def get_core_properties(presentation: Presentation) -> Dict:
         Dictionary of core properties
     """
     core_props = presentation.core_properties
-    
+
     return {
         'title': core_props.title,
         'subject': core_props.subject,

@@ -43,13 +43,39 @@ npx -y @smithery/cli install @GongRzhe/Office-PowerPoint-MCP-Server --client cla
 ### Prerequisites
 
 - Python 3.10 or higher
-- pip package manager
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (recommended for development)
 
 ### Installation Options
 
-#### Option 1: Using the Setup Script (Recommended)
+#### Option 1: Development Setup with uv (Recommended for Developers)
 
-The easiest way to set up the PowerPoint MCP Server is using the provided setup script, which automates the installation process:
+The fastest way to set up the development environment using [uv](https://docs.astral.sh/uv/), Astral's fast Python package manager:
+
+1. **Clone and enter the repository:**
+   ```bash
+   git clone https://github.com/GongRzhe/Office-PowerPoint-MCP-Server.git
+   cd Office-PowerPoint-MCP-Server
+   ```
+
+2. **Set up the development environment:**
+   ```bash
+   uv sync
+   ```
+   
+   This will:
+   - Create a virtual environment in `.venv/`
+   - Install all project dependencies
+   - Install development dependencies (pytest, black, ruff, mypy)
+   - Install the project in editable mode
+
+3. **Run the MCP server:**
+   ```bash
+   uv run python ppt_mcp_server.py
+   ```
+
+#### Option 2: Using the Setup Script
+
+The easiest way for end users to set up the PowerPoint MCP Server using the provided setup script:
 
 ```bash
 python setup_mcp.py
@@ -69,7 +95,7 @@ The script offers different paths based on your environment:
 - If the server is already installed, it provides configuration options
 - If the server is not installed, it offers installation methods
 
-#### Option 2: Manual Installation
+#### Option 3: Manual Installation
 
 1. Clone the repository:
    ```bash
@@ -94,12 +120,145 @@ The script offers different paths based on your environment:
 Run the server:
 
 ```bash
+# With uv (recommended for development)
+uv run python ppt_mcp_server.py
+
+# Traditional method
 python ppt_mcp_server.py
 ```
 
-### MCP Configuration
+## Development Workflow
 
-#### Option 1: Local Python Server
+### Code Quality Tools
+
+```bash
+# Format code
+uv run black .
+
+# Lint code
+uv run ruff check .
+uv run ruff check --fix .  # Auto-fix issues
+
+# Type checking
+uv run mypy .
+
+# Run all quality checks
+uv run black . && uv run ruff check --fix . && uv run mypy .
+```
+
+### Testing
+
+```bash
+# Run tests
+uv run pytest
+
+# Run tests with coverage (if added)
+uv run pytest --cov=.
+```
+
+### Adding Dependencies
+
+```bash
+# Add runtime dependency
+uv add python-dependency-name
+
+# Add development dependency
+uv add --dev pytest-plugin-name
+
+# Add dependency with version constraint
+uv add "requests>=2.25.0"
+```
+
+### Managing the Environment
+
+```bash
+# Update all dependencies
+uv sync
+
+# Lock dependencies without installing
+uv lock
+
+# Install just the project (without dev deps)
+uv sync --no-dev
+
+# Remove a dependency
+uv remove dependency-name
+```
+
+## Project Configuration
+
+### Configuration Files
+
+#### pyproject.toml
+The project configuration includes:
+- **Project metadata**: name, version, dependencies
+- **Build system**: using hatchling
+- **uv configuration**: dev dependencies
+- **Tool configurations**: black, ruff, mypy settings
+
+#### uv.lock
+Generated automatically by `uv sync`. This file:
+- Locks exact versions of all dependencies
+- Ensures reproducible builds
+- Should be committed to version control
+
+### Benefits of uv
+
+- **Fast**: Installs packages 10-100x faster than pip
+- **Reliable**: Deterministic resolution with lockfile
+- **Compatible**: Works with existing Python packaging standards
+- **Convenient**: Single tool for dependency management, virtual environments, and running commands
+
+### Migration from pip/venv
+
+If you have an existing pip-based setup:
+
+1. Your existing `requirements.txt` is still supported
+2. uv will read your `pyproject.toml` configuration
+3. The `.venv` directory structure is compatible
+4. You can gradually migrate scripts to use `uv run`
+
+### IDE Integration
+
+#### VS Code
+Add to your VS Code settings or workspace:
+```json
+{
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.terminal.activateEnvironment": true
+}
+```
+
+#### PyCharm
+Set the Python interpreter to `.venv/bin/python` in your project settings.
+
+### Troubleshooting
+
+#### Environment Issues
+```bash
+# Remove and recreate environment
+rm -rf .venv uv.lock
+uv sync
+```
+
+#### Dependency Conflicts
+```bash
+# Check what's installed
+uv pip list
+
+# Inspect dependency tree
+uv pip tree
+```
+
+#### Performance
+```bash
+# Clear uv cache if needed
+uv cache clean
+```
+
+## MCP Configuration
+
+### Option 1: Local Python Server
 
 Add the server to your MCP settings configuration file:
 
@@ -115,7 +274,7 @@ Add the server to your MCP settings configuration file:
 }
 ```
 
-#### Option 2: Using UVX (No Local Installation Required)
+### Option 2: Using UVX (No Local Installation Required)
 
 If you have `uvx` installed, you can run the server directly from PyPI without local installation:
 
