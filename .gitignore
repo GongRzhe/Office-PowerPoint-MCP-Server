@@ -12,3 +12,7 @@ wheels/
 test/
 .DS_Store
 CLAUDE.md
+
+# credential
+*.env
+mcp-config.json
