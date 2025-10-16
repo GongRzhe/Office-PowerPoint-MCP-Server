@@ -3,6 +3,7 @@ S3 storage tools for PowerPoint MCP Server.
 Handles uploading, downloading, and managing presentations in S3-compatible storage.
 """
 from typing import Dict, Optional
+import os
 from mcp.server.fastmcp import FastMCP
 import utils.s3_utils as s3_utils
 
@@ -10,9 +11,47 @@ import utils.s3_utils as s3_utils
 # Global S3 client cache
 _s3_clients = {}
 
+# Auto-configure default connection from environment variables
+def _auto_configure_default_connection():
+    """
+    Automatically configure a default S3 connection from environment variables.
+    
+    Supported environment variables:
+    - S3_ENDPOINT_URL: S3 endpoint URL (required)
+    - S3_ACCESS_KEY or AWS_ACCESS_KEY_ID: Access key
+    - S3_SECRET_KEY or AWS_SECRET_ACCESS_KEY: Secret key
+    - S3_REGION or AWS_DEFAULT_REGION: AWS region (optional, defaults to 'us-east-1')
+    """
+    endpoint_url = os.environ.get('S3_ENDPOINT_URL')
+    access_key = os.environ.get('S3_ACCESS_KEY') or os.environ.get('AWS_ACCESS_KEY_ID')
+    secret_key = os.environ.get('S3_SECRET_KEY') or os.environ.get('AWS_SECRET_ACCESS_KEY')
+    region = os.environ.get('S3_REGION') or os.environ.get('AWS_DEFAULT_REGION')
+    
+    # Only configure if we have the required credentials
+    if endpoint_url and access_key and secret_key:
+        try:
+            s3_client = s3_utils.create_s3_client(
+                endpoint_url=endpoint_url,
+                access_key=access_key,
+                secret_key=secret_key,
+                region=region
+            )
+            _s3_clients['default'] = s3_client
+            print(f"✓ Auto-configured default S3 connection from environment variables")
+            print(f"  Endpoint: {endpoint_url}")
+            print(f"  Region: {region or 'us-east-1'}")
+            return True
+        except Exception as e:
+            print(f"⚠ Warning: Failed to auto-configure S3 from environment: {e}")
+            return False
+    return False
+
 
 def register_s3_tools(app: FastMCP, presentations: Dict, get_current_presentation_id):
     """Register S3 storage tools with the FastMCP app"""
+    
+    # Try to auto-configure default connection from environment
+    _auto_configure_default_connection()
     
     @app.tool()
     def configure_s3_connection(

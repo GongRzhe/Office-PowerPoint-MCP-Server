@@ -31,6 +31,72 @@ The S3 feature requires the `boto3` library, which is included in the updated `r
 pip install -r requirements.txt
 ```
 
+## Configuration
+
+### Environment Variables (Recommended)
+
+The server automatically configures a default S3 connection from environment variables. This is the recommended approach for production deployments.
+
+**Supported Environment Variables:**
+
+- `S3_ENDPOINT_URL` - S3 endpoint URL (required)
+- `S3_ACCESS_KEY` or `AWS_ACCESS_KEY_ID` - Access key ID
+- `S3_SECRET_KEY` or `AWS_SECRET_ACCESS_KEY` - Secret access key
+- `S3_REGION` or `AWS_DEFAULT_REGION` - AWS region (optional, defaults to 'us-east-1')
+
+**Setup:**
+
+1. Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+2. Edit `.env` with your S3 credentials:
+```bash
+S3_ENDPOINT_URL=https://s3.amazonaws.com
+S3_ACCESS_KEY=your-access-key
+S3_SECRET_KEY=your-secret-key
+S3_REGION=us-east-1
+```
+
+3. Start the server - it will automatically configure the default connection:
+```bash
+python ppt_mcp_server.py
+```
+
+**Example Configurations:**
+
+AWS S3:
+```bash
+S3_ENDPOINT_URL=https://s3.amazonaws.com
+S3_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+S3_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+S3_REGION=us-east-1
+```
+
+MinIO (Local):
+```bash
+S3_ENDPOINT_URL=http://localhost:9000
+S3_ACCESS_KEY=minioadmin
+S3_SECRET_KEY=minioadmin
+S3_REGION=us-east-1
+```
+
+DigitalOcean Spaces:
+```bash
+S3_ENDPOINT_URL=https://nyc3.digitaloceanspaces.com
+S3_ACCESS_KEY=your-spaces-key
+S3_SECRET_KEY=your-spaces-secret
+S3_REGION=nyc3
+```
+
+### Manual Configuration
+
+You can also configure connections manually using the `configure_s3_connection` tool. This is useful for:
+- Multiple connections to different S3 services
+- Runtime configuration changes
+- Testing different configurations
+
 ## Available Tools
 
 ### 1. configure_s3_connection
