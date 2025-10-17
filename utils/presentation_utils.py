@@ -5,6 +5,7 @@ Functions for creating, opening, saving, and managing presentations.
 from pptx import Presentation
 from typing import Dict, List, Optional
 import os
+from .core_utils import sanitize_path
 
 
 def create_presentation() -> Presentation:
@@ -26,8 +27,13 @@ def open_presentation(file_path: str) -> Presentation:
         
     Returns:
         A Presentation object
+        
+    Raises:
+        ValueError: If path traversal is detected
     """
-    return Presentation(file_path)
+    # Sanitize the file path to prevent path traversal attacks
+    sanitized_path = sanitize_path(file_path, allow_absolute=True)
+    return Presentation(sanitized_path)
 
 
 def create_presentation_from_template(template_path: str) -> Presentation:
@@ -42,20 +48,24 @@ def create_presentation_from_template(template_path: str) -> Presentation:
         
     Raises:
         FileNotFoundError: If the template file doesn't exist
+        ValueError: If path traversal is detected or invalid file type
         Exception: If the template file is corrupted or invalid
     """
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"Template file not found: {template_path}")
+    # Sanitize the file path to prevent path traversal attacks
+    sanitized_path = sanitize_path(template_path, allow_absolute=True)
     
-    if not template_path.lower().endswith(('.pptx', '.potx')):
+    if not os.path.exists(sanitized_path):
+        raise FileNotFoundError(f"Template file not found: {sanitized_path}")
+    
+    if not sanitized_path.lower().endswith(('.pptx', '.potx')):
         raise ValueError("Template file must be a .pptx or .potx file")
     
     try:
         # Load the template file as a presentation
-        presentation = Presentation(template_path)
+        presentation = Presentation(sanitized_path)
         return presentation
     except Exception as e:
-        raise Exception(f"Failed to load template file '{template_path}': {str(e)}")
+        raise Exception(f"Failed to load template file '{sanitized_path}': {str(e)}")
 
 
 def save_presentation(presentation: Presentation, file_path: str) -> str:
@@ -68,9 +78,14 @@ def save_presentation(presentation: Presentation, file_path: str) -> str:
         
     Returns:
         The file path where the presentation was saved
+        
+    Raises:
+        ValueError: If path traversal is detected
     """
-    presentation.save(file_path)
-    return file_path
+    # Sanitize the file path to prevent path traversal attacks
+    sanitized_path = sanitize_path(file_path, allow_absolute=True)
+    presentation.save(sanitized_path)
+    return sanitized_path
 
 
 def get_template_info(template_path: str) -> Dict:
@@ -82,12 +97,18 @@ def get_template_info(template_path: str) -> Dict:
         
     Returns:
         Dictionary containing template information
+        
+    Raises:
+        ValueError: If path traversal is detected
     """
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"Template file not found: {template_path}")
+    # Sanitize the file path to prevent path traversal attacks
+    sanitized_path = sanitize_path(template_path, allow_absolute=True)
+    
+    if not os.path.exists(sanitized_path):
+        raise FileNotFoundError(f"Template file not found: {sanitized_path}")
     
     try:
-        presentation = Presentation(template_path)
+        presentation = Presentation(sanitized_path)
         
         # Get slide layouts
         layouts = get_slide_layouts(presentation)
@@ -99,10 +120,10 @@ def get_template_info(template_path: str) -> Dict:
         slide_count = len(presentation.slides)
         
         # Get file size
-        file_size = os.path.getsize(template_path)
+        file_size = os.path.getsize(sanitized_path)
         
         return {
-            "template_path": template_path,
+            "template_path": sanitized_path,
             "file_size_bytes": file_size,
             "slide_count": slide_count,
             "layout_count": len(layouts),
@@ -110,7 +131,7 @@ def get_template_info(template_path: str) -> Dict:
             "core_properties": core_props
         }
     except Exception as e:
-        raise Exception(f"Failed to read template info from '{template_path}': {str(e)}")
+        raise Exception(f"Failed to read template info from '{sanitized_path}': {str(e)}")
 
 
 def get_presentation_info(presentation: Presentation) -> Dict:
