@@ -19,7 +19,8 @@ from tools import (
     register_chart_tools,
     register_connector_tools,
     register_master_tools,
-    register_transition_tools
+    register_transition_tools,
+    register_s3_tools
 )
 
 # Initialize the FastMCP server
@@ -324,6 +325,12 @@ register_transition_tools(
     is_valid_rgb
 )
 
+register_s3_tools(
+    app,
+    presentations,
+    get_current_presentation_id
+)
+
 
 # ---- Additional Utility Tools ----
 
@@ -366,8 +373,8 @@ def get_server_info() -> Dict:
     """Get information about the MCP server."""
     return {
         "name": "PowerPoint MCP Server - Enhanced Edition",
-        "version": "2.1.0",
-        "total_tools": 32,  # Organized into 11 specialized modules
+        "version": "2.2.0",
+        "total_tools": 39,  # Organized into 12 specialized modules
         "loaded_presentations": len(presentations),
         "current_presentation": current_presentation_id,
         "features": [
@@ -376,10 +383,11 @@ def get_server_info() -> Dict:
             "Template Operations (7 tools)",
             "Structural Elements (4 tools)",
             "Professional Design (3 tools)",
-            "Specialized Features (5 tools)"
+            "Specialized Features (5 tools)",
+            "S3 Storage (7 tools)"
         ],
         "improvements": [
-            "32 specialized tools organized into 11 focused modules",
+            "39 specialized tools organized into 12 focused modules",
             "68+ utility functions across 7 organized utility modules",
             "Enhanced parameter handling and validation",
             "Unified operation interfaces with comprehensive coverage",
@@ -398,7 +406,8 @@ def get_server_info() -> Dict:
             "Advanced Text Run Formatting - Apply formatting to specific text runs",
             "Shape Connectors - Add connector lines and arrows between points",
             "Slide Master Management - Access and manage slide masters and layouts",
-            "Slide Transitions - Basic transition management (placeholder for future)"
+            "Slide Transitions - Basic transition management (placeholder for future)",
+            "S3 Storage - Upload, download, list, and manage presentations in S3-compatible storage"
         ]
     }
 
