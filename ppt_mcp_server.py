@@ -141,31 +141,31 @@ def add_shape_direct(slide, shape_type: str, left: float, top: float, width: flo
     from pptx.util import Inches
     
     # Direct mapping of shape types to their integer values
-    # These values are directly from the MS Office VBA documentation
+    # Values from MSO_AUTO_SHAPE_TYPE enum: https://github.com/scanny/python-pptx/blob/master/src/pptx/enum/shapes.py
     shape_type_map = {
-        'rectangle': 1,
-        'rounded_rectangle': 2, 
-        'oval': 9,
-        'diamond': 4,
-        'triangle': 5,  # This is ISOSCELES_TRIANGLE
-        'right_triangle': 6,
-        'pentagon': 56,
-        'hexagon': 10,
-        'heptagon': 11,
-        'octagon': 12,
-        'star': 12,  # This is STAR_5_POINTS (value 12)
-        'arrow': 13,
-        'cloud': 35,
-        'heart': 21,
-        'lightning_bolt': 22,
-        'sun': 23,
-        'moon': 24,
-        'smiley_face': 17,
-        'no_symbol': 19,
-        'flowchart_process': 112,
-        'flowchart_decision': 114,
-        'flowchart_data': 115,
-        'flowchart_document': 119
+        'rectangle': 1,              # RECTANGLE
+        'rounded_rectangle': 5,      # ROUNDED_RECTANGLE
+        'oval': 9,                   # OVAL
+        'diamond': 4,                # DIAMOND
+        'triangle': 7,               # ISOSCELES_TRIANGLE
+        'right_triangle': 8,         # RIGHT_TRIANGLE
+        'pentagon': 51,              # PENTAGON
+        'hexagon': 10,               # HEXAGON
+        'heptagon': 145,             # HEPTAGON
+        'octagon': 6,                # OCTAGON
+        'star': 92,                  # STAR_5_POINT
+        'arrow': 33,                 # RIGHT_ARROW
+        'cloud': 179,                # CLOUD
+        'heart': 21,                 # HEART
+        'lightning_bolt': 22,        # LIGHTNING_BOLT
+        'sun': 23,                   # SUN
+        'moon': 24,                  # MOON
+        'smiley_face': 17,           # SMILEY_FACE
+        'no_symbol': 19,             # NO_SYMBOL
+        'flowchart_process': 61,     # FLOWCHART_PROCESS
+        'flowchart_decision': 63,    # FLOWCHART_DECISION
+        'flowchart_data': 64,        # FLOWCHART_DATA
+        'flowchart_document': 67     # FLOWCHART_DOCUMENT
     }
     
     # Check if shape type is valid before trying to use it
