@@ -4,17 +4,22 @@ Implements hyperlink operations for text shapes and runs.
 """
 
 from typing import Dict, List, Optional, Any
+from mcp.types import ToolAnnotations
 
 def register_hyperlink_tools(app, presentations, get_current_presentation_id, validate_parameters, 
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
     """Register hyperlink management tools with the FastMCP app."""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Manage Hyperlinks",
+        ),
+    )
     def manage_hyperlinks(
         operation: str,
         slide_index: int,
         shape_index: int = None,
-        text: str = None, 
+        text: str = None,
         url: str = None,
         run_index: int = 0,
         presentation_id: str = None

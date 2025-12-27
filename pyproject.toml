@@ -19,7 +19,7 @@ classifiers = [
 requires-python = ">=3.6"
 dependencies = [
     "python-pptx>=0.6.21",
-    "mcp[cli]>=1.3.0",
+    "mcp[cli]>=1.8.0",
     "Pillow>=8.0.0",
     "fonttools>=4.0.0",
 ]

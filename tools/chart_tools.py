@@ -4,13 +4,18 @@ Implements advanced chart data manipulation capabilities.
 """
 
 from typing import Dict, List, Optional, Any
+from mcp.types import ToolAnnotations
 from pptx.chart.data import ChartData
 
 def register_chart_tools(app, presentations, get_current_presentation_id, validate_parameters, 
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
     """Register chart data management tools with the FastMCP app."""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Update Chart Data",
+        ),
+    )
     def update_chart_data(
         slide_index: int,
         shape_index: int,

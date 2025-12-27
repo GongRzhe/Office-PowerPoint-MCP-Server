@@ -4,6 +4,7 @@ Implements connector line/arrow drawing capabilities.
 """
 
 from typing import Dict, List, Optional, Any
+from mcp.types import ToolAnnotations
 from pptx.util import Inches, Pt
 from pptx.enum.shapes import MSO_CONNECTOR
 from pptx.dml.color import RGBColor
@@ -12,7 +13,11 @@ def register_connector_tools(app, presentations, get_current_presentation_id, va
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
     """Register connector tools with the FastMCP app."""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Add Connector",
+        ),
+    )
     def add_connector(
         slide_index: int,
         connector_type: str,

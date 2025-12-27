@@ -4,13 +4,18 @@ Handles themes, effects, fonts, and advanced formatting.
 """
 from typing import Dict, List, Optional, Any
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 import utils as ppt_utils
 
 
 def register_professional_tools(app: FastMCP, presentations: Dict, get_current_presentation_id):
     """Register professional design tools with the FastMCP app"""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Apply Professional Design",
+        ),
+    )
     def apply_professional_design(
         operation: str,  # "professional_slide", "theme", "enhance", "get_schemes"
         slide_index: Optional[int] = None,
@@ -116,7 +121,11 @@ def register_professional_tools(app: FastMCP, presentations: Dict, get_current_p
                 "error": f"Failed to apply professional design: {str(e)}"
             }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Apply Picture Effects",
+        ),
+    )
     def apply_picture_effects(
         slide_index: int,
         shape_index: int,
@@ -244,7 +253,11 @@ def register_professional_tools(app: FastMCP, presentations: Dict, get_current_p
                 "error": f"Failed to apply picture effects: {str(e)}"
             }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Manage Fonts",
+        ),
+    )
     def manage_fonts(
         operation: str,  # "analyze", "optimize", "recommend"
         font_path: str,

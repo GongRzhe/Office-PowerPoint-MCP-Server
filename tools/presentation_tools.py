@@ -5,13 +5,18 @@ Handles presentation creation, opening, saving, and core properties.
 from typing import Dict, List, Optional, Any
 import os
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 import utils as ppt_utils
 
 
 def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_presentation_id, get_template_search_directories):
     """Register presentation management tools with the FastMCP app"""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Create Presentation",
+        ),
+    )
     def create_presentation(id: Optional[str] = None) -> Dict:
         """Create a new PowerPoint presentation."""
         # Create a new presentation
@@ -31,7 +36,11 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
             "slide_count": len(pres.slides)
         }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Create Presentation from Template",
+        ),
+    )
     def create_presentation_from_template(template_path: str, id: Optional[str] = None) -> Dict:
         """Create a new PowerPoint presentation from a template file."""
         # Check if template file exists
@@ -74,7 +83,12 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
             "layout_count": len(pres.slide_layouts)
         }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Open Presentation",
+            readOnlyHint=True,
+        ),
+    )
     def open_presentation(file_path: str, id: Optional[str] = None) -> Dict:
         """Open an existing PowerPoint presentation from a file."""
         # Check if file exists
@@ -104,7 +118,12 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
             "slide_count": len(pres.slides)
         }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Save Presentation",
+            destructiveHint=True,
+        ),
+    )
     def save_presentation(file_path: str, presentation_id: Optional[str] = None) -> Dict:
         """Save a presentation to a file."""
         # Use the specified presentation or the current one
@@ -127,7 +146,12 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
                 "error": f"Failed to save presentation: {str(e)}"
             }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Get Presentation Info",
+            readOnlyHint=True,
+        ),
+    )
     def get_presentation_info(presentation_id: Optional[str] = None) -> Dict:
         """Get information about a presentation."""
         pres_id = presentation_id if presentation_id is not None else get_current_presentation_id()
@@ -148,7 +172,12 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
                 "error": f"Failed to get presentation info: {str(e)}"
             }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Get Template File Info",
+            readOnlyHint=True,
+        ),
+    )
     def get_template_file_info(template_path: str) -> Dict:
         """Get information about a template file including layouts and properties."""
         # Check if template file exists
@@ -174,7 +203,11 @@ def register_presentation_tools(app: FastMCP, presentations: Dict, get_current_p
                 "error": f"Failed to get template info: {str(e)}"
             }
 
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Set Core Properties",
+        ),
+    )
     def set_core_properties(
         title: Optional[str] = None,
         subject: Optional[str] = None,
