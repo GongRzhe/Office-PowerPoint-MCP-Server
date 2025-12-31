@@ -3,6 +3,38 @@ Core utility functions for PowerPoint MCP Server.
 Basic operations and error handling.
 """
 from typing import Any, Callable, List, Tuple, Optional
+import codecs
+
+
+def ensure_unicode_text(text: str) -> str:
+    """
+    Ensure text is properly decoded as unicode.
+
+    This handles cases where unicode escape sequences (like \\u00fc for ü)
+    are passed as literal strings instead of actual unicode characters.
+    This can happen when JSON is serialized with ensure_ascii=True or
+    when text passes through systems that escape unicode.
+
+    Args:
+        text: The input text that may contain escaped unicode sequences
+
+    Returns:
+        Text with proper unicode characters
+    """
+    if not isinstance(text, str):
+        return text
+
+    # Check if text contains unicode escape sequences like \u00fc
+    # These would appear as literal backslash-u in the string
+    if '\\u' in text:
+        try:
+            # Decode unicode escape sequences
+            text = codecs.decode(text, 'unicode_escape')
+        except (UnicodeDecodeError, ValueError):
+            # If decoding fails, return original text
+            pass
+
+    return text
 
 
 def try_multiple_approaches(operation_name: str, approaches: List[Tuple[Callable, str]]) -> Tuple[Any, Optional[str]]:

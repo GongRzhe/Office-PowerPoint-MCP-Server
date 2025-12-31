@@ -13,6 +13,8 @@ import tempfile
 import os
 import base64
 
+from .core_utils import ensure_unicode_text
+
 
 def add_slide(presentation: Presentation, layout_index: int = 1) -> Tuple:
     """
@@ -79,42 +81,42 @@ def get_slide_info(slide, slide_index: int) -> Dict:
 def set_title(slide, title: str) -> None:
     """
     Set the title of a slide.
-    
+
     Args:
         slide: The slide object
         title: The title text
     """
     if slide.shapes.title:
-        slide.shapes.title.text = title
+        slide.shapes.title.text = ensure_unicode_text(title)
 
 
 def populate_placeholder(slide, placeholder_idx: int, text: str) -> None:
     """
     Populate a placeholder with text.
-    
+
     Args:
         slide: The slide object
         placeholder_idx: The index of the placeholder
         text: The text to add
     """
     placeholder = slide.placeholders[placeholder_idx]
-    placeholder.text = text
+    placeholder.text = ensure_unicode_text(text)
 
 
 def add_bullet_points(placeholder, bullet_points: List[str]) -> None:
     """
     Add bullet points to a placeholder.
-    
+
     Args:
         placeholder: The placeholder object
         bullet_points: List of bullet point texts
     """
     text_frame = placeholder.text_frame
     text_frame.clear()
-    
+
     for i, point in enumerate(bullet_points):
         p = text_frame.add_paragraph()
-        p.text = point
+        p.text = ensure_unicode_text(point)
         p.level = 0
 
 
@@ -151,8 +153,8 @@ def add_textbox(slide, left: float, top: float, width: float, height: float, tex
     textbox = slide.shapes.add_textbox(
         Inches(left), Inches(top), Inches(width), Inches(height)
     )
-    
-    textbox.text_frame.text = text
+
+    textbox.text_frame.text = ensure_unicode_text(text)
     
     # Apply formatting if provided
     if any([font_size, font_name, bold, italic, underline, color, bg_color, alignment, vertical_alignment]):

@@ -5,6 +5,7 @@ Handles slides, text, images, and content manipulation.
 from typing import Dict, List, Optional, Any, Union
 from mcp.server.fastmcp import FastMCP
 import utils as ppt_utils
+from utils.core_utils import ensure_unicode_text
 import tempfile
 import base64
 import os
@@ -428,7 +429,7 @@ def register_content_tools(app: FastMCP, presentations: Dict, get_current_presen
                     
                     # Add run with text
                     run = paragraph.add_run()
-                    run.text = run_data['text']
+                    run.text = ensure_unicode_text(run_data['text'])
                     
                     # Apply formatting using pptx imports
                     from pptx.util import Pt

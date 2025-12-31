@@ -3,18 +3,65 @@ Presentation management utilities for PowerPoint MCP Server.
 Functions for creating, opening, saving, and managing presentations.
 """
 from pptx import Presentation
+from pptx.util import Inches, Emu
 from typing import Dict, List, Optional
 import os
 
 
-def create_presentation() -> Presentation:
+# Standard slide dimensions in EMUs (English Metric Units)
+# 914400 EMUs = 1 inch
+SLIDE_DIMENSIONS = {
+    "4:3": {
+        "width": Inches(10),      # 10 inches
+        "height": Inches(7.5),    # 7.5 inches
+        "name": "Standard (4:3)"
+    },
+    "16:9": {
+        "width": Inches(13.333),  # 13.333 inches
+        "height": Inches(7.5),    # 7.5 inches
+        "name": "Widescreen (16:9)"
+    },
+    "16:10": {
+        "width": Inches(10),      # 10 inches
+        "height": Inches(6.25),   # 6.25 inches
+        "name": "Widescreen (16:10)"
+    },
+    "a4": {
+        "width": Inches(10.833),  # A4 portrait width
+        "height": Inches(7.5),    # A4 portrait height
+        "name": "A4 Paper"
+    }
+}
+
+
+def create_presentation(aspect_ratio: str = "16:9") -> Presentation:
     """
-    Create a new PowerPoint presentation.
-    
+    Create a new PowerPoint presentation with specified aspect ratio.
+
+    Args:
+        aspect_ratio: Slide aspect ratio. Options: "4:3", "16:9", "16:10", "a4".
+                     Default is "16:9" for widescreen.
+
     Returns:
-        A new Presentation object
+        A new Presentation object with the specified slide dimensions
     """
-    return Presentation()
+    pres = Presentation()
+
+    # Normalize the aspect ratio string
+    aspect_ratio = aspect_ratio.lower().strip()
+
+    # Get dimensions for the specified aspect ratio
+    if aspect_ratio in SLIDE_DIMENSIONS:
+        dimensions = SLIDE_DIMENSIONS[aspect_ratio]
+        pres.slide_width = dimensions["width"]
+        pres.slide_height = dimensions["height"]
+    else:
+        # Default to 16:9 if invalid ratio provided
+        dimensions = SLIDE_DIMENSIONS["16:9"]
+        pres.slide_width = dimensions["width"]
+        pres.slide_height = dimensions["height"]
+
+    return pres
 
 
 def open_presentation(file_path: str) -> Presentation:

@@ -33,6 +33,7 @@ A comprehensive MCP (Model Context Protocol) server for PowerPoint manipulation 
 - **Template support** with automatic theme and layout preservation
 - **Multi-presentation management** with global state tracking
 - **Core document properties** management (title, subject, author, keywords, comments)
+- **Configurable slide aspect ratios** including 16:9 (widescreen, default), 4:3 (standard), 16:10, and A4
 
 ### Content Creation & Management
 - **Slide management** with flexible layout selection
@@ -80,7 +81,7 @@ npx -y @smithery/cli install @GongRzhe/Office-PowerPoint-MCP-Server --client cla
 
 ### Prerequisites
 
-- Python 3.6 or higher (as specified in pyproject.toml)
+- Python 3.10 or higher (required by the MCP package)
 - pip package manager
 - Optional: uvx for package execution without local installation
 
@@ -218,7 +219,7 @@ If you have `uvx` installed, you can run the server directly from PyPI without l
 The server provides **34 specialized tools** organized into the following categories:
 
 ### **Presentation Management (7 tools)**
-1. **create_presentation** - Create new presentations
+1. **create_presentation** - Create new presentations with configurable aspect ratio (4:3, 16:9, 16:10, a4)
 2. **create_presentation_from_template** - Create from templates with theme preservation
 3. **open_presentation** - Open existing presentations
 4. **save_presentation** - Save presentations to files
@@ -313,14 +314,18 @@ apply_professional_design(operation="enhance", slide_index=0, color_scheme="eleg
 
 ## Examples
 
+> **Note:** The examples below use a `use_mcp_tool()` function as pseudo-code to illustrate how MCP tools are called. This is not a real function in Python - it represents how an MCP client (like Claude Desktop, Cursor, or other AI assistants) would invoke tools from this server. The actual implementation depends on your MCP client. For direct Python usage, you can import and call the functions from the `utils` module directly.
+
 ### Creating a New Presentation
 
 ```python
-# Create a new presentation
+# Create a new widescreen (16:9) presentation - this is the default
 result = use_mcp_tool(
     server_name="ppt",
     tool_name="create_presentation",
-    arguments={}
+    arguments={
+        "aspect_ratio": "16:9"  # Options: "4:3", "16:9", "16:10", "a4"
+    }
 )
 presentation_id = result["presentation_id"]
 

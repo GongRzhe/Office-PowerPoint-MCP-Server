@@ -5,6 +5,7 @@ Handles tables, shapes, and charts.
 from typing import Dict, List, Optional, Any
 from mcp.server.fastmcp import FastMCP
 import utils as ppt_utils
+from utils.core_utils import ensure_unicode_text
 
 
 def register_structural_tools(app: FastMCP, presentations: Dict, get_current_presentation_id, validate_parameters, is_positive, is_non_negative, is_in_range, is_valid_rgb, add_shape_direct):
@@ -88,7 +89,7 @@ def register_structural_tools(app: FastMCP, presentations: Dict, get_current_pre
                 for r in range(rows):
                     for c in range(cols):
                         if r < len(data) and c < len(data[r]):
-                            table.cell(r, c).text = str(data[r][c])
+                            table.cell(r, c).text = ensure_unicode_text(str(data[r][c]))
             
             # Apply formatting
             for r in range(rows):
@@ -251,7 +252,7 @@ def register_structural_tools(app: FastMCP, presentations: Dict, get_current_pre
             
             # Add text to shape if provided
             if text and hasattr(shape, 'text_frame'):
-                shape.text_frame.text = text
+                shape.text_frame.text = ensure_unicode_text(text)
                 if font_size or font_color:
                     ppt_utils.format_text(
                         shape.text_frame,

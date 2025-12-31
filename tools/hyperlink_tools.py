@@ -4,6 +4,7 @@ Implements hyperlink operations for text shapes and runs.
 """
 
 from typing import Dict, List, Optional, Any
+from utils.core_utils import ensure_unicode_text
 
 def register_hyperlink_tools(app, presentations, get_current_presentation_id, validate_parameters, 
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
@@ -86,7 +87,7 @@ def register_hyperlink_tools(app, presentations, get_current_presentation_id, va
                 # Add new text run with hyperlink
                 paragraph = shape.text_frame.paragraphs[0]
                 run = paragraph.add_run()
-                run.text = text
+                run.text = ensure_unicode_text(text)
                 run.hyperlink.address = url
                 
                 return {

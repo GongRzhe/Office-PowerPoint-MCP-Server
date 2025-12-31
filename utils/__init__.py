@@ -13,6 +13,7 @@ __all__ = [
     # Core utilities
     "safe_operation",
     "try_multiple_approaches",
+    "ensure_unicode_text",
     
     # Presentation utilities
     "create_presentation",
