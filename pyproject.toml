@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "office-powerpoint-mcp-server"
-version = "2.0.6"
+version = "2.0.7"
 description = "MCP Server for PowerPoint manipulation using python-pptx - Consolidated Edition"
 readme = "README.md"
 license = {file = "LICENSE"}
