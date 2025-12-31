@@ -4,12 +4,17 @@ Implements slide master and layout access capabilities.
 """
 
 from typing import Dict, List, Optional, Any
+from mcp.types import ToolAnnotations
 
 def register_master_tools(app, presentations, get_current_presentation_id, validate_parameters, 
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
     """Register slide master management tools with the FastMCP app."""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Manage Slide Masters",
+        ),
+    )
     def manage_slide_masters(
         operation: str,
         master_index: int = 0,

@@ -4,12 +4,17 @@ Implements slide transition and timing capabilities.
 """
 
 from typing import Dict, List, Optional, Any
+from mcp.types import ToolAnnotations
 
 def register_transition_tools(app, presentations, get_current_presentation_id, validate_parameters, 
                           is_positive, is_non_negative, is_in_range, is_valid_rgb):
     """Register slide transition management tools with the FastMCP app."""
     
-    @app.tool()
+    @app.tool(
+        annotations=ToolAnnotations(
+            title="Manage Slide Transitions",
+        ),
+    )
     def manage_slide_transitions(
         slide_index: int,
         operation: str,
